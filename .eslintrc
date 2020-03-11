@@ -1,0 +1,3 @@
+{
+  "extends": ["@ebanx/eslint-config-nba"]
+}
