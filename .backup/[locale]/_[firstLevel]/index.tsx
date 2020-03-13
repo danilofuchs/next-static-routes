@@ -1,16 +1,13 @@
 import { GetStaticProps, GetStaticPaths } from "next";
 import dynamic from "next/dynamic";
 
-const HelpArticlesPage = dynamic(() =>
-    import("../../../components/pages/HelpArticlesPage")
-);
+const HelpPage = dynamic(() => import("../../../components/pages/HelpPage"));
 
-const firstLevelPageNamePathMap = {
+const pageNamePathMap = {
     help: ["ajuda", "ayuda"],
 };
-
 const pageNameComponentMap = {
-    helpArticles: HelpArticlesPage,
+    help: HelpPage,
 };
 
 interface Props {
@@ -24,7 +21,7 @@ export default function StaticPage(props: Props) {
         <>
             <div>{props.locale}</div>
             <pre>{JSON.stringify(props.messages, null, 2)}</pre>
-            <Component />
+            <Component {...props} />
         </>
     );
 }
@@ -36,14 +33,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
                 params: {
                     locale: "pt",
                     firstLevel: "ajuda",
-                    secondLevel: "encontrar-codigo",
                 },
             },
             {
                 params: {
                     locale: "es",
                     firstLevel: "ayuda",
-                    secondLevel: "encontrar-codigo-espanol",
                 },
             },
         ],
@@ -54,9 +49,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
     const locale = context.params?.locale;
     const firstLevel = context.params?.firstLevel as string;
-    const pageName = Object.entries(
-        firstLevelPageNamePathMap
-    ).find(([_, paths]) => paths.includes(firstLevel))?.[0];
+    const pageName = Object.entries(pageNamePathMap).find(([_, paths]) =>
+        paths.includes(firstLevel)
+    )?.[0];
     console.log(pageName);
     return {
         props: {
